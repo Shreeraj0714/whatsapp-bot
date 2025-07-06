@@ -142,8 +142,8 @@ def send_daily_campaign():
     current_message_index = (current_message_index + 1) % len(campaign_messages)
     save_index(current_message_index)
 
-# Schedule at 16:25 PM every day (UTC)
-schedule.every().day.at("16:25").do(send_daily_campaign)
+# Schedule at 16:35 PM every day (UTC)
+schedule.every().day.at("16:35").do(send_daily_campaign)
 
 def run_scheduler():
     while True:
