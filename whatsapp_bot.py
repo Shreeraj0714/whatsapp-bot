@@ -6,6 +6,7 @@ import logging
 import schedule
 import time
 from threading import Thread
+import os
 
 app = Flask(__name__)
 logging.basicConfig(level=logging.INFO)
@@ -29,6 +30,30 @@ def load_json(filename, key):
 faqs = load_json("faqs.json", "faqs")
 contacts = load_json("contacts.json", "contacts")
 
+# === Marketing Messages ===
+campaign_messages = [
+    "🔥 Big Sale today only! Don’t miss it.",
+    "🎁 New arrivals just for you! Check them out.",
+    "✅ Did you know? We have a loyalty program.",
+    "🌟 Exclusive discounts available now.",
+    "🚀 Free shipping on all orders today!"
+]
+
+# === Persistent Index ===
+INDEX_FILE = "campaign_index.json"
+
+def load_index():
+    if os.path.exists(INDEX_FILE):
+        with open(INDEX_FILE, "r") as f:
+            return json.load(f).get("index", 0)
+    return 0
+
+def save_index(index):
+    with open(INDEX_FILE, "w") as f:
+        json.dump({"index": index}, f)
+
+current_message_index = load_index()
+
 # === Helpers ===
 def send_whatsapp_message(phone_number: str, text: str):
     """Send message to a WhatsApp user via Meta Graph API."""
@@ -46,7 +71,6 @@ def send_whatsapp_message(phone_number: str, text: str):
     logging.info(f"📤 Sent to {phone_number}: {res.status_code} {res.text}")
 
 def find_faq_answer(user_question: str) -> str:
-    """Try to find an FAQ answer matching the user's question."""
     user_question = user_question.lower()
     for faq in faqs:
         if faq["question"].lower() in user_question:
@@ -54,7 +78,6 @@ def find_faq_answer(user_question: str) -> str:
     return ""
 
 def generate_gemini_answer(prompt: str) -> str:
-    """Get a generative response from Gemini if no FAQ matches."""
     response = gemini_model.generate_content(prompt)
     return response.text.strip()
 
@@ -63,7 +86,6 @@ def generate_gemini_answer(prompt: str) -> str:
 @app.route('/webhook', methods=['GET', 'POST'])
 def webhook():
     if request.method == 'GET':
-        # Meta webhook verification
         token = request.args.get('hub.verify_token')
         challenge = request.args.get('hub.challenge')
         if token == VERIFY_TOKEN:
@@ -83,10 +105,7 @@ def webhook():
 
                 logging.info(f"✅ User ({phone_number}) said: {msg_text}")
 
-                # First try FAQ
                 reply = find_faq_answer(msg_text)
-
-                # If no FAQ match, use Gemini
                 if not reply:
                     reply = generate_gemini_answer(msg_text)
 
@@ -99,10 +118,8 @@ def webhook():
 
 @app.route('/send_campaign', methods=['POST'])
 def send_campaign():
-    """Send a marketing campaign message to all contacts."""
     req = request.json
     message = req.get("message", "Hello! Check out our latest offers.")
-
     logging.info(f"📢 Sending campaign: {message}")
 
     for contact in contacts:
@@ -114,14 +131,19 @@ def send_campaign():
 # === Scheduled Campaign ===
 
 def send_daily_campaign():
-    message = "🌞 Good morning! Don’t miss today’s special offer!"
-    logging.info("⏰ Scheduled campaign triggered.")
+    global current_message_index
+    message = campaign_messages[current_message_index]
+    logging.info(f"⏰ Scheduled campaign triggered. Message: {message}")
+
     for contact in contacts:
         personalized = f"Hi {contact['name']}, {message}"
         send_whatsapp_message(contact["phone"], personalized)
 
-# Schedule at 14:30 PM every day (UTC)
-schedule.every().day.at("14:30").do(send_daily_campaign)
+    current_message_index = (current_message_index + 1) % len(campaign_messages)
+    save_index(current_message_index)
+
+# Schedule at 14:50 PM every day (UTC)
+schedule.every().day.at("14:50").do(send_daily_campaign)
 
 def run_scheduler():
     while True:
@@ -130,9 +152,8 @@ def run_scheduler():
 
 # === Main ===
 if __name__ == '__main__':
-    # Run Flask in a separate thread
     flask_thread = Thread(target=lambda: app.run(host="0.0.0.0", port=5000))
     flask_thread.start()
 
-    # Run scheduler in main thread
     run_scheduler()
+
