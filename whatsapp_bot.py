@@ -13,7 +13,7 @@ logging.basicConfig(level=logging.INFO)
 
 # === ✅ Tokens & IDs ===
 VERIFY_TOKEN = "shreeraj123"
-ACCESS_TOKEN = "EAAWBpLkKe98BPMvx7bRNiO6EcLWwGO0LjUj5PHb0ofiCZBAxqtaOAH0H3wh0wMuXU9H3OJZCMPanzhSS6QVc3CYEU29nftTBZBZBWA0c4x0eL3e5ZCIGfD5KmLVbNWcA87wOtx56stKQUsb7WZAZB6DpE53wA9UjSCiDbJKA7ZBTJirV0UM7xYKOdR1tZAnZCdlmintRlBoV2w4iZBOG3kYJfPI9LcW5ZBZCQiZCajSPAVlGVceJEGZCgZDZD"
+ACCESS_TOKEN = "EAAWBpLkKe98BPLM6QDSY6KbwtZBSZCWPU3rBH979t8uDigI3l2sghkPFEvkdRMJDZB4LSYAKZCH7emVnH8f8ToK2cFYl7RXH6r8n61zzfl5sjC5a6c8ZCPAIaRdz9DBTiF2bqaNkspjIZCZAtQa9YF6Kf5a78S7KjgWTZAj101zXABH2ZCJbmfCTiac83082uARhZAJjnvMEx2sB3kws6hS0zhslsDwT1ha5JlTw0ARFARoeoZBZBwZDZD"
 WHATSAPP_PHONE_NUMBER_ID = "662731940264952"
 GEMINI_API_KEY = "AIzaSyBAi_c3eKDLATHFMEi_HuGNRJ1jEoMNRQ8"
 
@@ -142,8 +142,8 @@ def send_daily_campaign():
     current_message_index = (current_message_index + 1) % len(campaign_messages)
     save_index(current_message_index)
 
-# Schedule at 14:55 PM every day (UTC)
-schedule.every().day.at("14:55").do(send_daily_campaign)
+# Schedule at 16:15 PM every day (UTC)
+schedule.every().day.at("16:15").do(send_daily_campaign)
 
 def run_scheduler():
     while True:
