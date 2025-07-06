@@ -44,12 +44,12 @@ INDEX_FILE = "campaign_index.json"
 
 def load_index():
     if os.path.exists(INDEX_FILE):
-        with open(INDEX_FILE, "r") as f:
+        with open(INDEX_FILE, "r", encoding="utf-8-sig") as f:
             return json.load(f).get("index", 0)
     return 0
 
 def save_index(index):
-    with open(INDEX_FILE, "w") as f:
+    with open(INDEX_FILE, "w", encoding="utf-8") as f:
         json.dump({"index": index}, f)
 
 current_message_index = load_index()
@@ -142,8 +142,8 @@ def send_daily_campaign():
     current_message_index = (current_message_index + 1) % len(campaign_messages)
     save_index(current_message_index)
 
-# Schedule at 16:35 PM every day (UTC)
-schedule.every().day.at("16:35").do(send_daily_campaign)
+# Schedule at 16:55 PM UTC every day 
+schedule.every().day.at("16:55").do(send_daily_campaign)
 
 def run_scheduler():
     while True:
@@ -152,8 +152,11 @@ def run_scheduler():
 
 # === Main ===
 if __name__ == '__main__':
-    flask_thread = Thread(target=lambda: app.run(host="0.0.0.0", port=5000))
+    # Start Flask in a separate thread
+    flask_thread = Thread(target=lambda: app.run(host="0.0.0.0", port=5000, use_reloader=False))
     flask_thread.start()
 
+    # Run scheduler in main thread
     run_scheduler()
+
 
