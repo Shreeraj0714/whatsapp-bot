@@ -120,8 +120,8 @@ def send_daily_campaign():
         personalized = f"Hi {contact['name']}, {message}"
         send_whatsapp_message(contact["phone"], personalized)
 
-# Schedule at 10:00 AM every day (UTC)
-schedule.every().day.at("10:00").do(send_daily_campaign)
+# Schedule at 14:30 PM every day (UTC)
+schedule.every().day.at("14:30").do(send_daily_campaign)
 
 def run_scheduler():
     while True:
