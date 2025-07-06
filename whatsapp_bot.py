@@ -3,6 +3,9 @@ import requests
 import google.generativeai as genai
 import json
 import logging
+import schedule
+import time
+from threading import Thread
 
 app = Flask(__name__)
 logging.basicConfig(level=logging.INFO)
@@ -108,6 +111,28 @@ def send_campaign():
 
     return jsonify({"status": "success", "message": "Campaign sent"}), 200
 
+# === Scheduled Campaign ===
+
+def send_daily_campaign():
+    message = "🌞 Good morning! Don’t miss today’s special offer!"
+    logging.info("⏰ Scheduled campaign triggered.")
+    for contact in contacts:
+        personalized = f"Hi {contact['name']}, {message}"
+        send_whatsapp_message(contact["phone"], personalized)
+
+# Schedule at 10:00 AM every day (UTC)
+schedule.every().day.at("10:00").do(send_daily_campaign)
+
+def run_scheduler():
+    while True:
+        schedule.run_pending()
+        time.sleep(1)
+
 # === Main ===
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    # Run Flask in a separate thread
+    flask_thread = Thread(target=lambda: app.run(host="0.0.0.0", port=5000))
+    flask_thread.start()
+
+    # Run scheduler in main thread
+    run_scheduler()
