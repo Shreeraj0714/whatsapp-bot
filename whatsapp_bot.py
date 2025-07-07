@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 import requests
 import google.generativeai as genai
 import json
@@ -119,6 +119,13 @@ def webhook():
 
                 name = find_contact_name(phone_number)
 
+                if not name:
+                    name = message.get("profile", {}).get("name", "Customer")
+                    contacts.append({"phone": phone_number, "name": name})
+                    with open("contacts.json", "w", encoding="utf-8") as f:
+                        json.dump({"contacts": contacts}, f, indent=2)
+                    logging.info(f"🆕 Added new contact: {phone_number} ({name})")
+
                 reply = find_faq_answer(msg_text)
                 if not reply:
                     reply = generate_gemini_answer(original_text)
@@ -149,6 +156,35 @@ def send_daily_campaign():
 
     return jsonify({"status": "success", "message": message_text}), 200
 
+# === 🔷 Thank You Endpoint ===
+@app.route('/send_thank_you', methods=['POST'])
+def send_thank_you():
+    data = request.form if request.form else request.json
+    phone = data.get("phone")
+    name = data.get("name", "Customer")
+
+    if not phone:
+        return jsonify({"status": "error", "message": "Phone number is required"}), 400
+
+    message_text = f"Hi {name}, thank you for shopping with us! We appreciate your business. 😊"
+    send_whatsapp_message(phone, message_text)
+
+    if not any(c["phone"] == phone for c in contacts):
+        contacts.append({"phone": phone, "name": name})
+        with open("contacts.json", "w", encoding="utf-8") as f:
+            json.dump({"contacts": contacts}, f, indent=2)
+        logging.info(f"🆕 Added new contact via form: {phone} ({name})")
+
+    return jsonify({"status": "success", "message": f"Thank you message sent to {phone}"}), 200
+
+# === 🔷 Thank You Form Route ===
+@app.route('/thankyou_form', methods=['GET'])
+def thankyou_form():
+    return render_template('thankyou.html')
+
 # === 🔷 Main ===
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=5000)
+
+
+
