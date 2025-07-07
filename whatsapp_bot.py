@@ -134,7 +134,12 @@ def webhook():
                 name = find_contact_name(phone_number)
 
                 if not name:
-                    name = message.get("profile", {}).get("name", "Customer")
+                    # 👇 FIX: Get name from contacts list
+                    contacts = changes.get("contacts", [])
+                    if contacts:
+                        name = contacts[0].get("profile", {}).get("name", "Customer")
+                    else:
+                        name = "Customer"
                     new_contact = Contact(name=name, phone=phone_number)
                     db.session.add(new_contact)
                     db.session.commit()
@@ -197,7 +202,7 @@ def send_thank_you():
 def thankyou_form():
     return render_template('thankyou.html')
 
-# === 🔷 Init DB Route (to manually create tables) ===
+# === 🔷 Init DB Route (optional manual init) ===
 @app.route('/init_db', methods=['GET'])
 def init_db():
     with app.app_context():
