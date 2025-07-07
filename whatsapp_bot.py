@@ -72,11 +72,9 @@ def find_faq_answer(user_question: str) -> str:
 
 def generate_gemini_answer(prompt: str) -> str:
     response = gemini_model.generate_content(prompt)
-    return response.text.strip()
+    return response.text.strip() if response.text else "Sorry, I couldn’t understand. Can you rephrase?"
 
 def send_intelligent_reply(phone_number: str, reply: str, name: str = None):
-    if name:
-        reply = f"{name}, {reply}"
     if "|" in reply:
         parts = reply.split("|", 1)
         image_url = parts[0].strip()
@@ -85,6 +83,8 @@ def send_intelligent_reply(phone_number: str, reply: str, name: str = None):
             caption = f"{name}, {caption}"
         send_whatsapp_image(phone_number, image_url, caption)
     else:
+        if name:
+            reply = f"{name}, {reply}"
         send_whatsapp_message(phone_number, reply)
 
 def find_contact_name(phone_number: str) -> str:
@@ -112,15 +112,16 @@ def webhook():
             if "messages" in changes:
                 message = changes["messages"][0]
                 phone_number = message["from"]
-                msg_text = message["text"]["body"].strip().lower()
+                original_text = message["text"]["body"].strip()
+                msg_text = original_text.lower()
 
-                logging.info(f"✅ User ({phone_number}) said: {msg_text}")
+                logging.info(f"✅ User ({phone_number}) said: {original_text}")
 
                 name = find_contact_name(phone_number)
 
                 reply = find_faq_answer(msg_text)
                 if not reply:
-                    reply = generate_gemini_answer(msg_text)
+                    reply = generate_gemini_answer(original_text)
 
                 send_intelligent_reply(phone_number, reply, name)
 
@@ -151,4 +152,3 @@ def send_daily_campaign():
 # === 🔷 Main ===
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=5000)
-
