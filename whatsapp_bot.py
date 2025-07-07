@@ -24,6 +24,10 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///contacts.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
+# === 🔷 Create tables (works on Render too) ===
+with app.app_context():
+    db.create_all()
+
 # === 🔷 Models ===
 class Contact(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -194,12 +198,4 @@ def send_thank_you():
 @app.route('/thankyou_form', methods=['GET'])
 def thankyou_form():
     return render_template('thankyou.html')
-
-# === 🔷 Main ===
-if __name__ == '__main__':
-    with app.app_context():
-        db.create_all()
-    app.run(host="0.0.0.0", port=5000)
-
-
 
