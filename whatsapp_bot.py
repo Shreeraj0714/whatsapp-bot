@@ -134,9 +134,13 @@ def webhook():
                 name = find_contact_name(phone_number)
 
                 if not name:
-                    # Get profile name from contacts[0]
-                    contact_info = changes.get("contacts", [{}])[0]
-                    name = contact_info.get("profile", {}).get("name", "Customer")
+                    # ✅ Get name from contacts[0] profile if available
+                    contacts_list = changes.get("contacts", [])
+                    if contacts_list and "profile" in contacts_list[0]:
+                        name = contacts_list[0]["profile"].get("name", "Customer")
+                    else:
+                        name = "Customer"
+
                     new_contact = Contact(name=name, phone=phone_number)
                     db.session.add(new_contact)
                     db.session.commit()
@@ -209,4 +213,3 @@ def init_db():
 # === 🔷 Main ===
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=5000)
-
