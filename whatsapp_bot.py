@@ -24,10 +24,6 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///contacts.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
-# Create tables on startup
-with app.app_context():
-    db.create_all()
-
 # === 🔷 Models ===
 class Contact(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -39,6 +35,8 @@ class Contact(db.Model):
 
 # === 🔷 Load JSON Data ===
 def load_json(filename, key):
+    if not os.path.exists(filename):
+        return []
     with open(filename, "r", encoding="utf-8") as f:
         data = json.load(f)
     return data.get(key, [])
@@ -198,6 +196,13 @@ def send_thank_you():
 @app.route('/thankyou_form', methods=['GET'])
 def thankyou_form():
     return render_template('thankyou.html')
+
+# === 🔷 Init DB Route (to manually create tables) ===
+@app.route('/init_db', methods=['GET'])
+def init_db():
+    with app.app_context():
+        db.create_all()
+    return "✅ Database initialized."
 
 # === 🔷 Main ===
 if __name__ == '__main__':
