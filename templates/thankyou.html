@@ -43,13 +43,18 @@
   button:hover {
     background-color: #45a049;
   }
+  #message {
+    margin-top: 1rem;
+    font-weight: bold;
+    color: green;
+  }
 </style>
 </head>
 <body>
 
 <h2>Send Thank You Message</h2>
 
-<form action="/send_thank_you" method="post">
+<form id="thankForm">
   <label for="name">Customer Name:</label>
   <input type="text" id="name" name="name" required>
 
@@ -59,5 +64,34 @@
   <button type="submit">Send</button>
 </form>
 
+<div id="message"></div>
+
+<script>
+document.getElementById("thankForm").addEventListener("submit", function(e) {
+  e.preventDefault(); // Prevent page reload
+
+  const formData = new FormData(this);
+  const data = new URLSearchParams(formData);
+
+  fetch("/send_thank_you", {
+    method: "POST",
+    body: data
+  })
+  .then(res => {
+    if (!res.ok) throw new Error("Server error");
+    return res.json();
+  })
+  .then(json => {
+    document.getElementById("message").textContent = json.message || "Thank you message sent!";
+    document.getElementById("message").style.color = "green";
+  })
+  .catch(err => {
+    document.getElementById("message").textContent = "Error sending message.";
+    document.getElementById("message").style.color = "red";
+  });
+});
+</script>
+
 </body>
 </html>
+
