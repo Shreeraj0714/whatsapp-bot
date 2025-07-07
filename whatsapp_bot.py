@@ -11,9 +11,9 @@ logging.basicConfig(level=logging.INFO)
 
 # === ✅ Tokens & IDs ===
 VERIFY_TOKEN = "shreeraj123"
-ACCESS_TOKEN = "EAAWBpLkKe98BPIGusXejLgJtGkd22GSiJJH9NGRHRYHrtrtzcPM6AblfiuwlUwPZC1e6nAd308dvRJ7WxIti2bHTfLDjPIZAkWR0v48To1HZBrxcxvohMZAU6i6U1ZAGvk3dOe90vYut3lsRKx5ZAN8gMRP1Uw1cxBZBjSIfFR99gUSLwV1eSJvbD2rG4xnE4Fp8oBGSBOY6cYBBX3Rmqs2o6u0U7cHsDSwebZAbGYyjpl3vzAZDZD"
+ACCESS_TOKEN = "<YOUR_ACCESS_TOKEN>"
 WHATSAPP_PHONE_NUMBER_ID = "662731940264952"
-GEMINI_API_KEY = "AIzaSyBAi_c3eKDLATHFMEi_HuGNRJ1jEoMNRQ8"
+GEMINI_API_KEY = "<YOUR_GEMINI_API_KEY>"
 
 # === 🔷 Initialize Gemini ===
 genai.configure(api_key=GEMINI_API_KEY)
@@ -24,7 +24,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///contacts.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
-# === 🔷 Create tables (works on Render too) ===
+# Create tables on startup
 with app.app_context():
     db.create_all()
 
@@ -198,4 +198,8 @@ def send_thank_you():
 @app.route('/thankyou_form', methods=['GET'])
 def thankyou_form():
     return render_template('thankyou.html')
+
+# === 🔷 Main ===
+if __name__ == '__main__':
+    app.run(host="0.0.0.0", port=5000)
 
