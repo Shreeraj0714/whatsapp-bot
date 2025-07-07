@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify, render_template
+from flask_sqlalchemy import SQLAlchemy
 import requests
 import google.generativeai as genai
 import json
@@ -10,13 +11,27 @@ logging.basicConfig(level=logging.INFO)
 
 # === ✅ Tokens & IDs ===
 VERIFY_TOKEN = "shreeraj123"
-ACCESS_TOKEN = "EAAWBpLkKe98BPIR3AITFc2F2ialHdp3WAfUezk8uE7PeYFyZAMYu6qQZAVmUGLJdJqVMRuKfOLK2AIVkMapFzM9wh3aEcZCa7Yc9yF8fWvubdRaKHvDJmyy1cjz2FoB1DKTuFH5SG7cGwv6Ez0ZA9WDWpwB6SZBMRBftn591EusvzpZBbETZB3Bc04CZCxShcTZCk2LaZCZCala7CsSEWGRdbA9dTgN0CezCIwWC8lvCUKqEIIw9tYZD"
+ACCESS_TOKEN = "your_new_access_token_here"
 WHATSAPP_PHONE_NUMBER_ID = "662731940264952"
 GEMINI_API_KEY = "AIzaSyBAi_c3eKDLATHFMEi_HuGNRJ1jEoMNRQ8"
 
 # === 🔷 Initialize Gemini ===
 genai.configure(api_key=GEMINI_API_KEY)
 gemini_model = genai.GenerativeModel("gemini-1.5-flash")
+
+# === 🔷 Configure Database ===
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///contacts.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy(app)
+
+# === 🔷 Models ===
+class Contact(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    phone = db.Column(db.String(20), unique=True, nullable=False)
+
+    def __repr__(self):
+        return f'<Contact {self.name}>'
 
 # === 🔷 Load JSON Data ===
 def load_json(filename, key):
@@ -25,7 +40,6 @@ def load_json(filename, key):
     return data.get(key, [])
 
 faqs = load_json("faqs.json", "faqs")
-contacts = load_json("contacts.json", "contacts")
 campaigns = load_json("campaigns.json", "campaigns")
 
 # === 🔷 Persistent Campaign Index ===
@@ -88,10 +102,8 @@ def send_intelligent_reply(phone_number: str, reply: str, name: str = None):
         send_whatsapp_message(phone_number, reply)
 
 def find_contact_name(phone_number: str) -> str:
-    for contact in contacts:
-        if contact["phone"] == phone_number:
-            return contact["name"]
-    return None
+    contact = Contact.query.filter_by(phone=phone_number).first()
+    return contact.name if contact else None
 
 # === 🔷 Webhook ===
 @app.route('/webhook', methods=['GET', 'POST'])
@@ -121,9 +133,9 @@ def webhook():
 
                 if not name:
                     name = message.get("profile", {}).get("name", "Customer")
-                    contacts.append({"phone": phone_number, "name": name})
-                    with open("contacts.json", "w", encoding="utf-8") as f:
-                        json.dump({"contacts": contacts}, f, indent=2)
+                    new_contact = Contact(name=name, phone=phone_number)
+                    db.session.add(new_contact)
+                    db.session.commit()
                     logging.info(f"🆕 Added new contact: {phone_number} ({name})")
 
                 reply = find_faq_answer(msg_text)
@@ -147,9 +159,10 @@ def send_daily_campaign():
 
     logging.info(f"⏰ Sending daily campaign: {message_text}")
 
+    contacts = Contact.query.all()
     for contact in contacts:
-        personalized_caption = f"{contact['name']}, {message_text}"
-        send_whatsapp_image(contact["phone"], image_url, personalized_caption)
+        personalized_caption = f"{contact.name}, {message_text}"
+        send_whatsapp_image(contact.phone, image_url, personalized_caption)
 
     current_message_index = (current_message_index + 1) % len(campaigns)
     save_index(current_message_index)
@@ -169,10 +182,10 @@ def send_thank_you():
     message_text = f"Hi {name}, thank you for shopping with us! We appreciate your business. 😊"
     send_whatsapp_message(phone, message_text)
 
-    if not any(c["phone"] == phone for c in contacts):
-        contacts.append({"phone": phone, "name": name})
-        with open("contacts.json", "w", encoding="utf-8") as f:
-            json.dump({"contacts": contacts}, f, indent=2)
+    if not Contact.query.filter_by(phone=phone).first():
+        new_contact = Contact(name=name, phone=phone)
+        db.session.add(new_contact)
+        db.session.commit()
         logging.info(f"🆕 Added new contact via form: {phone} ({name})")
 
     return jsonify({"status": "success", "message": f"Thank you message sent to {phone}"}), 200
@@ -184,7 +197,10 @@ def thankyou_form():
 
 # === 🔷 Main ===
 if __name__ == '__main__':
+    with app.app_context():
+        db.create_all()
     app.run(host="0.0.0.0", port=5000)
+
 
 
 
