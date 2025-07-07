@@ -10,9 +10,9 @@ logging.basicConfig(level=logging.INFO)
 
 # === ✅ Tokens & IDs ===
 VERIFY_TOKEN = "shreeraj123"
-ACCESS_TOKEN = "EAAWBpLkKe98BPMn9jfUKX5Fwh0ZANxxg4UJyVo3KfLCAZB7jKiJz2GyW4lnS2YZCD5ADZAZCLNwQneEWq9MCTZB8YqoO7bacKNqX0ZCCLIRWdYUNbIdUukpoNrTwwjce0Ash9qyCrAM4NfsJPkBwyaf9ZCIYSDYRTLZC2pOVlGZBvdkUYUI8pOIBdfudBwfgLj2LVelTTId93Od0SbnYYx99VKREFIxRxJmRt3fr8aCo2FmLMBaqBR"
+ACCESS_TOKEN = "<your_access_token>"
 WHATSAPP_PHONE_NUMBER_ID = "662731940264952"
-GEMINI_API_KEY = "AIzaSyBAi_c3eKDLATHFMEi_HuGNRJ1jEoMNRQ8"
+GEMINI_API_KEY = "<your_gemini_api_key>"
 
 # === 🔷 Initialize Gemini ===
 genai.configure(api_key=GEMINI_API_KEY)
@@ -74,14 +74,24 @@ def generate_gemini_answer(prompt: str) -> str:
     response = gemini_model.generate_content(prompt)
     return response.text.strip()
 
-def send_intelligent_reply(phone_number: str, reply: str):
+def send_intelligent_reply(phone_number: str, reply: str, name: str = None):
+    if name:
+        reply = f"{name}, {reply}"
     if "|" in reply:
         parts = reply.split("|", 1)
         image_url = parts[0].strip()
         caption = parts[1].strip()
+        if name:
+            caption = f"{name}, {caption}"
         send_whatsapp_image(phone_number, image_url, caption)
     else:
         send_whatsapp_message(phone_number, reply)
+
+def find_contact_name(phone_number: str) -> str:
+    for contact in contacts:
+        if contact["phone"] == phone_number:
+            return contact["name"]
+    return None
 
 # === 🔷 Webhook ===
 @app.route('/webhook', methods=['GET', 'POST'])
@@ -102,15 +112,17 @@ def webhook():
             if "messages" in changes:
                 message = changes["messages"][0]
                 phone_number = message["from"]
-                msg_text = message["text"]["body"]
+                msg_text = message["text"]["body"].strip().lower()
 
                 logging.info(f"✅ User ({phone_number}) said: {msg_text}")
+
+                name = find_contact_name(phone_number)
 
                 reply = find_faq_answer(msg_text)
                 if not reply:
                     reply = generate_gemini_answer(msg_text)
 
-                send_intelligent_reply(phone_number, reply)
+                send_intelligent_reply(phone_number, reply, name)
 
         except Exception as e:
             logging.error(f"⚠️ Error: {e}")
@@ -128,7 +140,7 @@ def send_daily_campaign():
     logging.info(f"⏰ Sending daily campaign: {message_text}")
 
     for contact in contacts:
-        personalized_caption = f"Hi {contact['name']}, {message_text}"
+        personalized_caption = f"{contact['name']}, {message_text}"
         send_whatsapp_image(contact["phone"], image_url, personalized_caption)
 
     current_message_index = (current_message_index + 1) % len(campaigns)

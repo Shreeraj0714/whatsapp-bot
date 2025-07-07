@@ -33,13 +33,13 @@
     { "question": "location", "answer": "📍 We are located at 123 Main Street, YourCity." },
     { "question": "how to reach", "answer": "📍 You can reach us at 123 Main Street, near Central Park, YourCity." },
 
-    { "question": "menu", "answer": "📖 You can view our menu here: https://www.behance.net/gallery/124651753/Menu-Card-Design/modules/708179839" },
-    { "question": "do you have a menu", "answer": "📖 You can view our menu here: https://www.behance.net/gallery/124651753/Menu-Card-Design/modules/708179839" },
-    { "question": "what's on your menu", "answer": "📖 You can view our menu here: https://www.behance.net/gallery/124651753/Menu-Card-Design/modules/708179839" },
+    { "question": "menu", "answer": "https://i.pinimg.com/736x/ec/14/e5/ec14e50dc7b1ae5461f5e50dc6c28261.jpg | 📖 You can view our menu here" },
+    { "question": "do you have a menu", "answer": "https://i.pinimg.com/736x/ec/14/e5/ec14e50dc7b1ae5461f5e50dc6c28261.jpg | 📖 You can view our menu here" },
+    { "question": "what's on your menu", "answer": "https://i.pinimg.com/736x/ec/14/e5/ec14e50dc7b1ae5461f5e50dc6c28261.jpg | 📖 You can view our menu here" },
 
-    { "question": "price", "answer": "💵 Our prices are reasonable and start at just $5. Check our menu here: https://www.behance.net/gallery/157422211/FOOD-MENU-Brochure-Design/modules/888146703" },
-    { "question": "rates", "answer": "💵 Our prices are reasonable and start at just $5. Check our menu here: https://www.behance.net/gallery/157422211/FOOD-MENU-Brochure-Design/modules/888146703" },
-    { "question": "cost", "answer": "💵 Our prices are reasonable and start at just $5. Check our menu here: https://www.behance.net/gallery/157422211/FOOD-MENU-Brochure-Design/modules/888146703" },
+    { "question": "price", "answer": "https://i.pinimg.com/736x/ec/14/e5/ec14e50dc7b1ae5461f5e50dc6c28261.jpg | 💵 Our prices are reasonable and start at just $5. Check our menu here" },
+    { "question": "rates", "answer": "https://i.pinimg.com/736x/ec/14/e5/ec14e50dc7b1ae5461f5e50dc6c28261.jpg | 💵 Our prices are reasonable and start at just $5. Check our menu here" },
+    { "question": "cost", "answer": "https://i.pinimg.com/736x/ec/14/e5/ec14e50dc7b1ae5461f5e50dc6c28261.jpg | 💵 Our prices are reasonable and start at just $5. Check our menu here" },
 
     { "question": "do you deliver", "answer": "🚚 Yes, we deliver through Zomato and Swiggy. Order now!" },
     { "question": "delivery", "answer": "🚚 Yes, we deliver through Zomato and Swiggy. Order now!" },
@@ -65,8 +65,8 @@
 
     { "question": "specials", "answer": "🌟 Today’s special: Chef’s Choice Pasta & Dessert Combo." },
     { "question": "today special", "answer": "🌟 Today’s special: Chef’s Choice Pasta & Dessert Combo." },
-    { "question": "offers", "answer": "🎉 Check out our latest offers here: https://www.behance.net/gallery/157422211/FOOD-MENU-Brochure-Design/modules/888146703" },
-    { "question": "discount", "answer": "🎉 Check out our latest offers here: https://www.behance.net/gallery/157422211/FOOD-MENU-Brochure-Design/modules/888146703" },
+    { "question": "offers", "answer": "https://i.pinimg.com/736x/ec/14/e5/ec14e50dc7b1ae5461f5e50dc6c28261.jpg | 🎉 Check out our latest offers here" },
+    { "question": "discount", "answer": "https://i.pinimg.com/736x/ec/14/e5/ec14e50dc7b1ae5461f5e50dc6c28261.jpg | Check out our latest offers here" },
 
     { "question": "thank you", "answer": "🙏 You’re most welcome! We’re always here to help." },
     { "question": "thanks", "answer": "🙏 You’re most welcome! We’re always here to help." }
