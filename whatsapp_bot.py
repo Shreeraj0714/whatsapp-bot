@@ -9,9 +9,8 @@ app = Flask(__name__)
 logging.basicConfig(level=logging.INFO)
 
 # === ✅ Tokens & IDs ===
-# WhatsApp verification token, Meta API access token, Gemini API key
 VERIFY_TOKEN = "shreeraj123"
-ACCESS_TOKEN = "EAAWBpLkKe98BPITEspfbOA3mH3QvGKt6HwMG6ZALS7fodDroBTeS9O8eFZA1yONCnJn1ejb07RVLg2dJZAOuyTKNyvavdIO1DvH1sq8oaPabvuLLSRnaAcZB2547uhjHgSRHUY5BX4v9e3y5uDtbOc4teDZAjnPKd0Q9XJY3U8OWSZBDR2pfdzdasmLv51Kk9nETSJ7D209fU2ZA7hlINpuE7GAWm0ZARvSnaOfvwDnZCsEwfeAZDZD"
+ACCESS_TOKEN = "EAAWBpLkKe98BPMn9jfUKX5Fwh0ZANxxg4UJyVo3KfLCAZB7jKiJz2GyW4lnS2YZCD5ADZAZCLNwQneEWq9MCTZB8YqoO7bacKNqX0ZCCLIRWdYUNbIdUukpoNrTwwjce0Ash9qyCrAM4NfsJPkBwyaf9ZCIYSDYRTLZC2pOVlGZBvdkUYUI8pOIBdfudBwfgLj2LVelTTId93Od0SbnYYx99VKREFIxRxJmRt3fr8aCo2FmLMBaqBR"
 WHATSAPP_PHONE_NUMBER_ID = "662731940264952"
 GEMINI_API_KEY = "AIzaSyBAi_c3eKDLATHFMEi_HuGNRJ1jEoMNRQ8"
 
@@ -20,7 +19,6 @@ genai.configure(api_key=GEMINI_API_KEY)
 gemini_model = genai.GenerativeModel("gemini-1.5-flash")
 
 # === 🔷 Load JSON Data ===
-# Load FAQs and contact list from local JSON files
 def load_json(filename, key):
     with open(filename, "r", encoding="utf-8") as f:
         data = json.load(f)
@@ -28,19 +26,9 @@ def load_json(filename, key):
 
 faqs = load_json("faqs.json", "faqs")
 contacts = load_json("contacts.json", "contacts")
-
-# === 🔷 Campaign Messages ===
-# Predefined marketing campaign messages
-campaign_messages = [
-    "🔥 Big Sale today only! Don’t miss it.",
-    "🎁 New arrivals just for you! Check them out.",
-    "✅ Did you know? We have a loyalty program.",
-    "🌟 Exclusive discounts available now.",
-    "🚀 Free shipping on all orders today!"
-]
+campaigns = load_json("campaigns.json", "campaigns")
 
 # === 🔷 Persistent Campaign Index ===
-# Keeps track of which campaign message was sent last
 INDEX_FILE = "campaign_index.json"
 
 def load_index():
@@ -55,51 +43,50 @@ def save_index(index):
 
 current_message_index = load_index()
 
-# === 🔷 Helper: Send WhatsApp Message ===
+# === 🔷 Helpers ===
 def send_whatsapp_message(phone_number: str, text: str):
-    """
-    Sends a message to a WhatsApp user via Meta Graph API.
-    """
     url = f"https://graph.facebook.com/v19.0/{WHATSAPP_PHONE_NUMBER_ID}/messages"
-    headers = {
-        "Authorization": f"Bearer {ACCESS_TOKEN}",
-        "Content-Type": "application/json"
-    }
+    headers = {"Authorization": f"Bearer {ACCESS_TOKEN}", "Content-Type": "application/json"}
+    payload = {"messaging_product": "whatsapp", "to": phone_number, "text": {"body": text}}
+    res = requests.post(url, headers=headers, json=payload)
+    logging.info(f"📤 Sent text to {phone_number}: {res.status_code} {res.text}")
+
+def send_whatsapp_image(phone_number: str, image_url: str, caption: str = ""):
+    url = f"https://graph.facebook.com/v19.0/{WHATSAPP_PHONE_NUMBER_ID}/messages"
+    headers = {"Authorization": f"Bearer {ACCESS_TOKEN}", "Content-Type": "application/json"}
     payload = {
         "messaging_product": "whatsapp",
         "to": phone_number,
-        "text": {"body": text}
+        "type": "image",
+        "image": {"link": image_url, "caption": caption}
     }
     res = requests.post(url, headers=headers, json=payload)
-    logging.info(f"📤 Sent to {phone_number}: {res.status_code} {res.text}")
+    logging.info(f"📤 Sent image to {phone_number}: {res.status_code} {res.text}")
 
-# === 🔷 Helper: Find FAQ Answer ===
 def find_faq_answer(user_question: str) -> str:
-    """
-    Checks if user's question matches any FAQ and returns the answer.
-    """
     user_question = user_question.lower()
     for faq in faqs:
         if faq["question"].lower() in user_question:
             return faq["answer"]
     return ""
 
-# === 🔷 Helper: Get Gemini AI Answer ===
 def generate_gemini_answer(prompt: str) -> str:
-    """
-    Uses Gemini AI to generate a response for user query.
-    """
     response = gemini_model.generate_content(prompt)
     return response.text.strip()
 
-# === 🔷 Webhook Endpoint ===
+def send_intelligent_reply(phone_number: str, reply: str):
+    if "|" in reply:
+        parts = reply.split("|", 1)
+        image_url = parts[0].strip()
+        caption = parts[1].strip()
+        send_whatsapp_image(phone_number, image_url, caption)
+    else:
+        send_whatsapp_message(phone_number, reply)
+
+# === 🔷 Webhook ===
 @app.route('/webhook', methods=['GET', 'POST'])
 def webhook():
-    """
-    WhatsApp webhook to handle verification and incoming messages.
-    """
     if request.method == 'GET':
-        # Verify webhook with Meta
         token = request.args.get('hub.verify_token')
         challenge = request.args.get('hub.challenge')
         if token == VERIFY_TOKEN:
@@ -107,7 +94,6 @@ def webhook():
         return 'Invalid verification token', 403
 
     if request.method == 'POST':
-        # Handle incoming WhatsApp message
         data = request.json
         logging.info(f"📩 Incoming webhook: {json.dumps(data, indent=2)}")
 
@@ -120,40 +106,37 @@ def webhook():
 
                 logging.info(f"✅ User ({phone_number}) said: {msg_text}")
 
-                # Try FAQ first
                 reply = find_faq_answer(msg_text)
                 if not reply:
-                    # Fall back to Gemini AI
                     reply = generate_gemini_answer(msg_text)
 
-                send_whatsapp_message(phone_number, reply)
+                send_intelligent_reply(phone_number, reply)
 
         except Exception as e:
             logging.error(f"⚠️ Error: {e}")
 
         return 'OK', 200
 
-# === 🔷 Campaign Endpoint (Cron Job) ===
+# === 🔷 Campaign Endpoint ===
 @app.route('/send_daily_campaign', methods=['POST'])
 def send_daily_campaign():
-    """
-    Sends the next marketing campaign message to all contacts.
-    Called by cron job.
-    """
     global current_message_index
-    message = campaign_messages[current_message_index]
-    logging.info(f"⏰ Sending daily campaign: {message}")
+    campaign = campaigns[current_message_index]
+    image_url = campaign["image"]
+    message_text = campaign["text"]
+
+    logging.info(f"⏰ Sending daily campaign: {message_text}")
 
     for contact in contacts:
-        personalized = f"Hi {contact['name']}, {message}"
-        send_whatsapp_message(contact["phone"], personalized)
+        personalized_caption = f"Hi {contact['name']}, {message_text}"
+        send_whatsapp_image(contact["phone"], image_url, personalized_caption)
 
-    # Update index for next time
-    current_message_index = (current_message_index + 1) % len(campaign_messages)
+    current_message_index = (current_message_index + 1) % len(campaigns)
     save_index(current_message_index)
 
-    return jsonify({"status": "success", "message": message}), 200
+    return jsonify({"status": "success", "message": message_text}), 200
 
-# === 🔷 Main Application ===
+# === 🔷 Main ===
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=5000)
+

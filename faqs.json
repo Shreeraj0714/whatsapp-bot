@@ -1,94 +1,76 @@
 {
   "faqs": [
     {
-      "question": "what are your opening hours",
-      "answer": "We are open daily from 8 AM to 11 PM."
+      "question": "hi",
+      "answer": "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=600&q=80 | 👋 Welcome to TasteBuds Café! We serve fresh, delicious meals all day. Let me know how I can help you today."
     },
     {
-      "question": "when do you open",
-      "answer": "We open at 8 AM every day."
+      "question": "hello",
+      "answer": "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=600&q=80 | 👋 Welcome to TasteBuds Café! We serve fresh, delicious meals all day. Let me know how I can help you today."
     },
     {
-      "question": "when do you close",
-      "answer": "We close at 11 PM every night."
+      "question": "hey",
+      "answer": "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=600&q=80 | 👋 Welcome to TasteBuds Café! We serve fresh, delicious meals all day. Let me know how I can help you today."
     },
     {
-      "question": "are you open now",
-      "answer": "Yes, we are open now."
+      "question": "hlo",
+      "answer": "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=600&q=80 | 👋 Welcome to TasteBuds Café! We serve fresh, delicious meals all day. Let me know how I can help you today."
     },
     {
-      "question": "you open now",
-      "answer": "Yes, we are open and ready to serve you!"
+      "question": "helo",
+      "answer": "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=600&q=80 | 👋 Welcome to TasteBuds Café! We serve fresh, delicious meals all day. Let me know how I can help you today."
     },
-    {
-      "question": "shop open now",
-      "answer": "Yes, the shop is open now."
-    },
-    {
-      "question": "cafe open now",
-      "answer": "Yes, the cafe is currently open."
-    },
-    {
-      "question": "hotel open now",
-      "answer": "Yes, the hotel is open and taking guests."
-    },
-    {
-      "question": "restaurant open now",
-      "answer": "Yes, the restaurant is open now."
-    },
-    {
-      "question": "closing time",
-      "answer": "We close at 11 PM."
-    },
-    {
-      "question": "timings",
-      "answer": "Our daily timings are 8 AM to 11 PM."
-    },
-    {
-      "question": "when r u open",
-      "answer": "We are open from 8 AM."
-    },
-    {
-      "question": "when r u closing",
-      "answer": "We close at 11 PM."
-    },
-    {
-      "question": "u open now",
-      "answer": "Yes, we’re open now!"
-    },
-    {
-      "question": "shop timings",
-      "answer": "Shop timings are 8 AM to 11 PM."
-    },
-    {
-      "question": "cafe timings",
-      "answer": "The cafe is open from 8 AM to 11 PM."
-    },
-    {
-      "question": "hotel timings",
-      "answer": "Hotel check-in is from 8 AM, and we close at 11 PM."
-    },
-    {
-      "question": "restaurant timings",
-      "answer": "Restaurant timings are 8 AM to 11 PM."
-    },
-    {
-      "question": "are you available now",
-      "answer": "Yes, we’re available from 8 Am to 11 pm ."
-    },
-    {
-      "question": "is it open",
-      "answer": "Yes, we are open from 8 AM to 11 PM!"
-    },
-    {
-        "question": "is it open now",
-        "answer": "Yes, we are currently open."
-        },
-        {
-        "question": "time",
-        "answer": "Our opening hours are from 8 AM to 11 PM daily."
-        }
 
+    { "question": "what are your timings", "answer": "🕒 We are open daily from 8 AM to 11 PM." },
+    { "question": "timings", "answer": "🕒 We are open daily from 8 AM to 11 PM." },
+    { "question": "opening hours", "answer": "🕒 We are open daily from 8 AM to 11 PM." },
+    { "question": "hours", "answer": "🕒 We are open daily from 8 AM to 11 PM." },
+    { "question": "when are you open", "answer": "🕒 We are open daily from 8 AM to 11 PM." },
+    { "question": "closing time", "answer": "🕒 We close at 11 PM every day." },
+
+    { "question": "where are you", "answer": "📍 We are located at 123 Main Street, YourCity." },
+    { "question": "address", "answer": "📍 We are located at 123 Main Street, YourCity." },
+    { "question": "location", "answer": "📍 We are located at 123 Main Street, YourCity." },
+    { "question": "how to reach", "answer": "📍 You can reach us at 123 Main Street, near Central Park, YourCity." },
+
+    { "question": "menu", "answer": "📖 You can view our menu here: https://www.behance.net/gallery/124651753/Menu-Card-Design/modules/708179839" },
+    { "question": "do you have a menu", "answer": "📖 You can view our menu here: https://www.behance.net/gallery/124651753/Menu-Card-Design/modules/708179839" },
+    { "question": "what's on your menu", "answer": "📖 You can view our menu here: https://www.behance.net/gallery/124651753/Menu-Card-Design/modules/708179839" },
+
+    { "question": "price", "answer": "💵 Our prices are reasonable and start at just $5. Check our menu here: https://www.behance.net/gallery/157422211/FOOD-MENU-Brochure-Design/modules/888146703" },
+    { "question": "rates", "answer": "💵 Our prices are reasonable and start at just $5. Check our menu here: https://www.behance.net/gallery/157422211/FOOD-MENU-Brochure-Design/modules/888146703" },
+    { "question": "cost", "answer": "💵 Our prices are reasonable and start at just $5. Check our menu here: https://www.behance.net/gallery/157422211/FOOD-MENU-Brochure-Design/modules/888146703" },
+
+    { "question": "do you deliver", "answer": "🚚 Yes, we deliver through Zomato and Swiggy. Order now!" },
+    { "question": "delivery", "answer": "🚚 Yes, we deliver through Zomato and Swiggy. Order now!" },
+    { "question": "can i order", "answer": "🚚 Yes, you can order online or call us at +91-9876543210." },
+
+    { "question": "contact", "answer": "📞 You can reach us at +91-8485881370." },
+    { "question": "phone", "answer": "📞 You can reach us at +91-8485881370." },
+    { "question": "mobile", "answer": "📞 You can reach us at +91-8485881370." },
+    { "question": "call", "answer": "📞 You can reach us at +91-8485881370." },
+
+    { "question": "wifi", "answer": "📶 Yes, we offer free Wi-Fi to all our guests." },
+    { "question": "parking", "answer": "🚗 We have ample parking space available." },
+    { "question": "payment", "answer": "💳 We accept cash, cards, and UPI payments." },
+
+    { "question": "do you serve breakfast", "answer": "🍳 Yes, we serve breakfast from 8 AM to 11 AM." },
+    { "question": "breakfast", "answer": "🍳 Yes, we serve breakfast from 8 AM to 11 AM." },
+    { "question": "lunch", "answer": "🥗 Yes, we serve lunch from 12 PM to 3 PM." },
+    { "question": "dinner", "answer": "🍝 Yes, we serve dinner from 7 PM to 11 PM." },
+
+    { "question": "are you open now", "answer": "🕒 We are open daily from 8 AM to 11 PM. Come visit us!" },
+    { "question": "open now", "answer": "🕒 We are open daily from 8 AM to 11 PM. Come visit us!" },
+    { "question": "are you closed", "answer": "🕒 We are open daily from 8 AM to 11 PM. Come visit us!" },
+
+    { "question": "specials", "answer": "🌟 Today’s special: Chef’s Choice Pasta & Dessert Combo." },
+    { "question": "today special", "answer": "🌟 Today’s special: Chef’s Choice Pasta & Dessert Combo." },
+    { "question": "offers", "answer": "🎉 Check out our latest offers here: https://www.behance.net/gallery/157422211/FOOD-MENU-Brochure-Design/modules/888146703" },
+    { "question": "discount", "answer": "🎉 Check out our latest offers here: https://www.behance.net/gallery/157422211/FOOD-MENU-Brochure-Design/modules/888146703" },
+
+    { "question": "thank you", "answer": "🙏 You’re most welcome! We’re always here to help." },
+    { "question": "thanks", "answer": "🙏 You’re most welcome! We’re always here to help." }
   ]
 }
+
 
